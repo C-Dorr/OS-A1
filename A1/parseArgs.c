@@ -1,3 +1,14 @@
+/*
+ * Author: Chris Dorr & Jordyn Marlow
+ * Assignment Number: 1
+ * Date of Submission: 10/DD/2020
+ * parseArgs.c
+ *
+ * Preliminary pass at parsing of options and their arguments 
+ * using getopt().
+ * To be further adapted to Assignment
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
