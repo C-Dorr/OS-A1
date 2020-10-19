@@ -3,10 +3,11 @@
 #include "options.h"
 
 
-int pid_arg = 1;
+/*int pid_arg = 1;
 char pid [100];
 itoa(pid_arg, pid, 10);
 char[] pid_path = strncat("/proc/", pid);
+*/
 
 char return_state_character(int pid) {
     // -s
@@ -30,6 +31,7 @@ char* return_uptime(int pid) {
  
 char* return_virtual_mem(int pid) {
     // -v
+    char pid_path[100] = itoa(
     DIR* statm = opendir(strncat(pid_path, "/statm"));
     if (statm != NULL)
     {
