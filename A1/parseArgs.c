@@ -18,9 +18,8 @@ const int GETOPT_FAILURE = -1;
 
 int main(int argc, char *argv[]) {
     int op;
-    int pid;
+    int pid = 1;
     bool pid_was_set = false;
-
 
     char state_char;
     char* uptime;
@@ -33,28 +32,32 @@ int main(int argc, char *argv[]) {
 		//Display PID when given PID value as argument
  		pid = atoi(optarg);
 		pid_was_set = true;
+		printf("PID:  %d\n", pid);
 	        break;
             case 's':
 	        //Single Character State Information
                 state_char = return_state_character(pid);
+                printf("STAT: %c\n", state_char);
 		break;
             case 't':
 	        //utime information
 		uptime = return_uptime(pid);
+		printf("TIME: %s\n", uptime);
 	        break;
             case 'v':
 		//Virtual Memory Used (Pages)
 		virtual_mem = return_virtual_mem(pid);
+		printf("VMEM: %s\n", virtual_mem);
 	        break;
             case 'c':
 		//Display Command Line which started this process
                 cmd_line = return_command_line(pid);
+		printf("CMD:  %s\n", cmd_line);
 		break;
-
+            default:
+		exit(EXIT_FAILURE);
         }
     }
-    if (pid_was_set) {
-        printf("PID: %i\n", pid);
-    }
+    
     exit(EXIT_SUCCESS);
 }
