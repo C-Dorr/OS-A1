@@ -1,5 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+#include <sys/types.h>
+#include <dirent.h>
+
 #include "options.h"
 
 
@@ -11,41 +16,50 @@ char[] pid_path = strncat("/proc/", pid);
 
 char return_state_character(int pid) {
     // -s
-    DIR* stat = opendir(strncat(pid_path, "/stat"));
+    char stat_proc_string[100];
+    sprintf(stat_proc_string, "/proc/%d/stat", pid);
+    
+    DIR* stat = opendir(stat_proc_string);
     if (stat != NULL)
     {
-        entry = readdir(stat);
+        // entry = readdir(stat);
         // parse stat for single-character state
+        return 'k';
     }
 }
-    
+   
 char* return_uptime(int pid) { 
 // -t
-    DIR* stat = opendir(strncat(pid_path, "/stat"));
+
+    char stat_proc_string[100];
+    sprintf(stat_proc_string, "/proc/%d/stat", pid);
+    DIR* stat = opendir(stat_proc_string);
     if (stat != NULL)
     {
-        entry = readdir(stat);
         // add utime to stime and display in hh:mm:ss
     }
 }
  
 char* return_virtual_mem(int pid) {
     // -v
-    char pid_path[100] = itoa(
-    DIR* statm = opendir(strncat(pid_path, "/statm"));
+    char statm_proc_string[100];
+    sprintf(statm_proc_string, "/proc/%d/statm", pid);
+    DIR* statm = opendir(statm_proc_string);
     if (statm != NULL)
     {
-        entry = readdir(statm);
         // look at first "size" field
     }
 }
  
 char* return_command_line(int pid) {
     // -c
-    DIR* cmdline = opendir(strncat(pid_path, "/cmdline"));
+
+    char cmdline_proc_string[100];
+    sprintf(cmdline_proc_string, "/proc/%d/cmdline", pid);
+    DIR* cmdline = opendir(cmdline_proc_string);
     if (cmdline != NULL)
     {
-        entry = readdir(cmdline);
         // parse cmdline until end of string?
     }
 }
+
