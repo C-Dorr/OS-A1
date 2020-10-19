@@ -15,6 +15,7 @@
 #include "options.h"
 
 const int GETOPT_FAILURE = -1;
+const int STRING_MAX = 100;
 
 int main(int argc, char *argv[]) {
     int op;
@@ -23,8 +24,8 @@ int main(int argc, char *argv[]) {
 
     char state_char;
     char* uptime;
-    char* virtual_mem;
-    char* cmd_line;
+    char virtual_mem[STRING_MAX];
+    char cmd_line[STRING_MAX];
 
     while ((op = getopt(argc, argv, "p:stvc")) != GETOPT_FAILURE) {
         switch (op) {
@@ -46,12 +47,12 @@ int main(int argc, char *argv[]) {
 	        break;
             case 'v':
 		//Virtual Memory Used (Pages)
-		virtual_mem = return_virtual_mem(pid);
+	        return_virtual_mem(pid, virtual_mem);
 		printf("VMEM: %s\n", virtual_mem);
 	        break;
             case 'c':
 		//Display Command Line which started this process
-                cmd_line = return_command_line(pid);
+                return_command_line(pid, cmd_line);
 		printf("CMD:  %s\n", cmd_line);
 		break;
             default:

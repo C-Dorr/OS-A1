@@ -40,26 +40,28 @@ char* return_uptime(int pid) {
     }
 }
  
-char* return_virtual_mem(int pid) {
+void return_virtual_mem(int pid, char* ret) {
     // -v
     char statm_proc_string[100];
     sprintf(statm_proc_string, "/proc/%d/statm", pid);
-    DIR* statm = opendir(statm_proc_string);
-    if (statm != NULL)
-    {
-        // look at first "size" field
+
+    FILE* statm = fopen(statm_proc_string, "r");
+    char c = fgetc(statm);
+
+    while (c != EOF && c != ' ') {
+	if (c != ' ') {
+            strcat(ret, &c);
+        }
+	c = fgetc(statm);
     }
 }
  
-char* return_command_line(int pid) {
+void return_command_line(int pid, char* ret) {
     // -c
-
     char cmdline_proc_string[100];
     sprintf(cmdline_proc_string, "/proc/%d/cmdline", pid);
-    DIR* cmdline = opendir(cmdline_proc_string);
-    if (cmdline != NULL)
-    {
-        // parse cmdline until end of string?
-    }
+
+    FILE* cmdline = fopen(cmdline_proc_string, "r");
+    fgets(ret, 100, cmdline);
 }
 

@@ -6,7 +6,7 @@ char return_state_character(int pid);
 char* return_uptime(int pid);
 
 //-v
-char* return_virtual_mem(int pid);
+void return_virtual_mem(int pid, char* ret);
 
 //-c
-char* return_command_line(int pid);
+void return_command_line(int pid, char* ret);
