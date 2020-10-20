@@ -1,12 +1,20 @@
 /*
  * Author: Chris Dorr & Jordyn Marlow
  * Assignment Number: 1
- * Date of Submission: 10/DD/2020
- * parseArgs.c
+ * Date of Submission: 10/21/2020
+ * 5ps.c
  *
- * Preliminary pass at parsing of options and their arguments 
- * using getopt().
- * To be further adapted to Assignment
+ * Student written version of the ps command.
+ * Supports 5 options, p, s, t, v, and c
+ * -p <PID>         When provided PID, 5ps returns information about
+ *                  the process with a process ID equal to PID
+ * -s               Display single-character state information about 
+ *                  the process
+ * -t               Display total time consumed by the process in
+ *                  HH:MM:SS format
+ * -v               Display pages of virtual memory currently being
+ *                  used by this process
+ * -c               Display the command-line that started this process 
  */
 
 #include <stdio.h>
@@ -15,17 +23,17 @@
 #include "options.h"
 
 const int GETOPT_FAILURE = -1;
-const int STRING_MAX = 100;
+const int PID_DEFAULT = 1;
 
 int main(int argc, char *argv[]) {
     int op;
-    int pid = 1;
+    int pid = PID_DEFAULT;
     bool pid_was_set = false;
 
     char state_char;
     char* uptime;
-    char virtual_mem[STRING_MAX];
-    char cmd_line[STRING_MAX];
+    char virtual_mem[BUFFER_LEN];
+    char cmd_line[BUFFER_LEN];
 
     while ((op = getopt(argc, argv, "p:stvc")) != GETOPT_FAILURE) {
         switch (op) {

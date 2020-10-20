@@ -1,4 +1,6 @@
 #define OPTIONS_H_
+extern const int BUFFER_LEN;
+
 //-s
 char return_state_character(int pid);
 

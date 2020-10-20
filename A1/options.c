@@ -7,7 +7,8 @@
 
 #include "options.h"
 
-
+const char* PROC_PATH = "/proc";
+const int BUFFER_LEN = 100;
 /*int pid_arg = 1;
 char pid [100];
 itoa(pid_arg, pid, 10);
@@ -41,27 +42,40 @@ char* return_uptime(int pid) {
 }
  
 void return_virtual_mem(int pid, char* ret) {
-    // -v
-    char statm_proc_string[100];
-    sprintf(statm_proc_string, "/proc/%d/statm", pid);
+    	
+    DIR* proc = opendir(PROC_PATH);
+    
+    struct dirent* entry;
+    
+    while (entry = readdir(proc)) {
+	if (strtol (entry -> d_name, NULL, 10) == pid) {
+            char statm_path[BUFFER_LEN];
+            sprintf(statm_path, "/proc/%d/statm", pid);
+           
 
-    FILE* statm = fopen(statm_proc_string, "r");
-    char c = fgetc(statm);
+	    FILE* statm = fopen(statm_path, "r");
+	    
+	    char buffer[BUFFER_LEN];
+	    fgets(buffer, 10000, statm);    
+	    strcpy(ret, strtok(buffer, " "));
 
-    while (c != EOF && c != ' ') {
-	if (c != ' ') {
-            strcat(ret, &c);
-        }
-	c = fgetc(statm);
+	    fclose(statm);
+	}
     }
 }
- 
+
 void return_command_line(int pid, char* ret) {
-    // -c
-    char cmdline_proc_string[100];
-    sprintf(cmdline_proc_string, "/proc/%d/cmdline", pid);
+    DIR* proc = opendir(PROC_PATH);
+    struct dirent* entry;
+    while (entry = readdir(proc)) {
+        if (strtol(entry -> d_name, NULL, 10) == pid) {
+	    char cmdline_path[BUFFER_LEN];
+            sprintf(cmdline_path, "/proc/%d/cmdline", pid);
 
-    FILE* cmdline = fopen(cmdline_proc_string, "r");
-    fgets(ret, 100, cmdline);
+	    FILE* cmdline = fopen(cmdline_path, "r");
+	    fgets(ret, 100, cmdline);
+
+	    fclose(cmdline);
+	}
+    }
 }
-
