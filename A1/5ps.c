@@ -22,10 +22,13 @@
 #include <unistd.h>
 #include "options.h"
 
+/* Define local constants */
 const int GETOPT_FAILURE = -1;
 const int PID_DEFAULT = 1;
 
 int main(int argc, char *argv[]) {
+    
+    /* Declare, and in some cases assign, variables to be used later */
     int op;
     int pid = PID_DEFAULT;
     bool pid_was_set = false;
@@ -35,6 +38,7 @@ int main(int argc, char *argv[]) {
     char virtual_mem[BUFFER_LEN];
     char cmd_line[BUFFER_LEN];
 
+    /* Loop processes all options given to program using getopt() */
     while ((op = getopt(argc, argv, "p:stvc")) != GETOPT_FAILURE) {
         switch (op) {
 	    case 'p':
@@ -53,20 +57,26 @@ int main(int argc, char *argv[]) {
 		uptime = return_uptime(pid);
 		printf("TIME: %s\n", uptime);
 	        break;
+
+            /* Run on -v presence and print virutual memory used */
             case 'v':
-		//Virtual Memory Used (Pages)
-	        return_virtual_mem(pid, virtual_mem);
+	        assign_virtual_mem(pid, virtual_mem);
 		printf("VMEM: %s\n", virtual_mem);
 	        break;
+
+            /* Run on -c presence and print command line
+	       that started process */
             case 'c':
-		//Display Command Line which started this process
-                return_command_line(pid, cmd_line);
+                assign_command_line(pid, cmd_line);
 		printf("CMD:  %s\n", cmd_line);
 		break;
+
+            /* No options. Per assignment, exit with no output. */
             default:
 		exit(EXIT_FAILURE);
         }
     }
     
+    /* Exit sucessfully after processing all arguments */
     exit(EXIT_SUCCESS);
 }

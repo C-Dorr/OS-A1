@@ -1,5 +1,15 @@
+/*
+ * Authors: Christopher Dorr & Jordyn Marlow
+ * Assignment Number: 1
+ * Date of Submission: 10/21/20
+ * 
+ * options.h
+ */
+
 #define OPTIONS_H_
-extern const int BUFFER_LEN;
+static const int BUFFER_LEN = 100;
+static const int FILE_GET_SIZE = 10000;
+static const char* PROC_PATH  = "/proc";
 
 //-s
 char return_state_character(int pid);
@@ -8,7 +18,7 @@ char return_state_character(int pid);
 char* return_uptime(int pid);
 
 //-v
-void return_virtual_mem(int pid, char* ret);
+void assign_virtual_mem(int pid, char* ret);
 
 //-c
-void return_command_line(int pid, char* ret);
+void assign_command_line(int pid, char* ret);
