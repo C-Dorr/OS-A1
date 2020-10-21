@@ -1,0 +1,48 @@
+Assignment 1 README
+
+Assignment 1 was completed by Christopher Dorr & Jordyn Marlow
+
+Compilation:
+    In dorrMarlow1/ compile using the command
+
+        g++ -o 5ps 5ps.c options.c
+
+    this will provide an executable which can be ran as described in the 
+    following section of this readme.
+
+Using Program:
+    5ps provides 5 output options which will display information about
+    a process given its process ID (PID). 5ps ran without any options
+    will print nothing and exit.
+
+    -p <PID>      The -p option expects one argument, an integer PID.
+                  If no PID is given, 5ps will assume PID = 1 for any
+                  other option given. PID = 1 is the init command of
+                  the machine.
+    
+    -s            This option will display the single character state
+                  of the given process. Find more information on 
+                  single character states by running 'man 1 ps' and 
+                  looking under the PROCESS STATE CODES header.
+
+    -t            This will display the total consumed time of the
+                  process, displayed in HH:MM:SS format.
+    
+    -v            This option displays the total virtual memory 
+                  consumed by the process (in pages).
+  
+    -c            This option outputs the command-line that started
+                  the process.
+
+Shortcomings:
+   5ps meets functional critera listed in the assignment. However, the
+   notable shortcomings are that
+       
+       1. Compilation warnings regarding [FILL WARNING DETAILS]
+
+       2. Data about a process will display in the order the options are
+          given. For instance './5ps -c -t' provides different, but
+          equivalent, output than './5ps -t -c'.
+
+
+ 
