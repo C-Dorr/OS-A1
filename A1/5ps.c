@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	            break;
             case 's':
 	            //Single Character State Information
-                assign_state_character(pid, state_char);
+                state_char = get_state_character(pid);
                 printf("STAT: %c\n", state_char);
 		        break;
             case 't':

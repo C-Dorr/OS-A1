@@ -18,7 +18,7 @@
 
 #include "options.h"
 
-void assign_state_character(int pid, char ret) {
+char get_state_character(int pid) {
     // -s
     char stat_proc_string[100];
     sprintf(stat_proc_string, "/proc");
@@ -33,8 +33,10 @@ void assign_state_character(int pid, char ret) {
                 char stat_string[25];
                 sprintf(stat_string, "/proc/%d/stat", pid);
                 FILE* stat_file = fopen(stat_string, "r");
-                fscanf(stat_file, "%*d %*s %c", &ret);
+                char state;
+                fscanf(stat_file, "%*d %*s %c", &state);
                 fclose(stat_file);
+                return state;
             }
         }
     }
@@ -125,7 +127,6 @@ void assign_virtual_mem(int pid, char* ret) {
 	    fclose(statm);
 	}
     }
-    exit(EXIT_FAILURE);
 }
 
 /*
@@ -168,5 +169,4 @@ void assign_command_line(int pid, char* ret) {
 	    fclose(cmdline);
 	}
     }
-    exit(EXIT_FAILURE);
 }

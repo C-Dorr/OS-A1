@@ -12,7 +12,7 @@ static const int FILE_GET_SIZE = 10000;
 static const char* PROC_PATH  = "/proc";
 
 //-s
-void assign_state_character(int pid, char ret);
+char get_state_character(int pid);
 
 //-t
 void assign_time(int pid, char* ret);
