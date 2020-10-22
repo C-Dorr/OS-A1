@@ -30,7 +30,6 @@ void assign_state_character(int pid, char ret) {
             }
         }
     }
-    //exit(EXIT_FAILURE);
 }
 
 void assign_time(int pid, char* ret) { 
@@ -58,11 +57,19 @@ void assign_time(int pid, char* ret) {
                 hours = total_seconds / 3600;
                 minutes = (total_seconds - (3600 * hours)) / 60;
                 seconds = total_seconds - (3600 * hours) - (minutes * 60);
-                sprintf(ret, "%lu:%lu:%lu", hours, minutes, seconds);
+                char hh[3], mm[3];
+                if (hours == 0)
+                    sprintf(hh, "00");
+                else
+                    sprintf(hh, "%lu", hours);
+                if (minutes == 0)
+                    sprintf(mm, "00");
+                else
+                    sprintf(mm, "%lu", minutes);
+                sprintf(ret, "%s:%s:%lu", hh, mm, seconds);
             }
         }
     }
-    exit(EXIT_FAILURE);
 }
 
 char* return_virtual_mem(int pid) {

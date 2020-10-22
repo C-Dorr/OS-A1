@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     bool pid_was_set = false;
 
     char state_char;
-    char* time;
+    char time[100];
     char* virtual_mem;
     char* cmd_line;
     while ((op = getopt(argc, argv, "p:stvc")) != GETOPT_FAILURE) {
@@ -42,7 +42,6 @@ int main(int argc, char *argv[]) {
 	            //utime information
 		        assign_time(pid, time);
 		        printf("TIME: %s\n", time);
-		        printf("debug\n");
 	            break;
             case 'v':
 		        //Virtual Memory Used (Pages)
