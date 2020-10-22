@@ -67,16 +67,20 @@ void assign_time(int pid, char* ret) {
                 hours = total_seconds / 3600;
                 minutes = (total_seconds - (3600 * hours)) / 60;
                 seconds = total_seconds - (3600 * hours) - (minutes * 60);
-                char hh[3], mm[3];
-                if (hours == 0)
-                    sprintf(hh, "00");
+                char hh[3], mm[3], ss[3];
+                if (hours < 10)
+                    sprintf(hh, "0%lu", hours);
                 else
                     sprintf(hh, "%lu", hours);
-                if (minutes == 0)
-                    sprintf(mm, "00");
+                if (minutes < 10)
+                    sprintf(mm, "0%lu", minutes);
                 else
                     sprintf(mm, "%lu", minutes);
-                sprintf(ret, "%s:%s:%lu", hh, mm, seconds);
+                if (seconds < 10)
+                    sprintf(ss, "0%lu", seconds);
+                else
+                    sprintf(ss, "%lu", seconds);
+                sprintf(ret, "%s:%s:%s", hh, mm, ss);
             }
         }
     }
