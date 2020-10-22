@@ -1,0 +1,18 @@
+$ ./5ps -p 31444
+PID:    31444
+
+$ ./5ps -p 31444 -s -t -c -v
+PID:    31444
+STAT:   S
+TIME:   00:00:00
+CMD:    bash
+VMEM:   2685
+
+$ ./5ps -p 984 -t -v
+PID:    984
+TIME:   00:00:00
+VMEM:   0
+
+$ ./5ps -p 23187 -s
+PID:    23187
+STAT:   S
