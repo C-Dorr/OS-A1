@@ -1,9 +1,10 @@
 #define OPTIONS_H_
+static const int BUFFER_LEN = 100;
 //-s
-char return_state_character(int pid);
+void assign_state_character(int pid, char ret);
 
 //-t
-char* return_uptime(int pid);
+void assign_time(int pid, char* ret);
 
 //-v
 char* return_virtual_mem(int pid);
