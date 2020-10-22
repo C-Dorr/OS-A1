@@ -1,12 +1,20 @@
 /*
  * Author: Chris Dorr & Jordyn Marlow
  * Assignment Number: 1
- * Date of Submission: 10/DD/2020
- * parseArgs.c
+ * Date of Submission: 10/21/2020
+ * 5ps.c
  *
- * Preliminary pass at parsing of options and their arguments 
- * using getopt().
- * To be further adapted to Assignment
+ * Student written version of the ps command.
+ * Supports 5 options, p, s, t, v, and c
+ * -p <PID>         When provided PID, 5ps returns information about
+ *                  the process with a process ID equal to PID
+ * -s               Display single-character state information about 
+ *                  the process
+ * -t               Display total time consumed by the process in
+ *                  HH:MM:SS format
+ * -v               Display pages of virtual memory currently being
+ *                  used by this process
+ * -c               Display the command-line that started this process 
  */
 
 #include <stdio.h>
@@ -14,17 +22,23 @@
 #include <unistd.h>
 #include "options.h"
 
+/* Define local constants */
 const int GETOPT_FAILURE = -1;
+const int PID_DEFAULT = 1;
 
 int main(int argc, char *argv[]) {
+    
+    /* Declare, and in some cases assign, variables to be used later */
     int op;
-    int pid = 1;
+    int pid = PID_DEFAULT;
     bool pid_was_set = false;
 
     char state_char;
     char time[100];
-    char* virtual_mem;
-    char* cmd_line;
+    char virtual_mem[BUFFER_LEN];
+    char cmd_line[BUFFER_LEN];
+
+    /* Loop processes all options given to program using getopt() */
     while ((op = getopt(argc, argv, "p:stvc")) != GETOPT_FAILURE) {
         switch (op) {
 	        case 'p':
@@ -44,19 +58,23 @@ int main(int argc, char *argv[]) {
 		        printf("TIME: %s\n", time);
 	            break;
             case 'v':
-		        //Virtual Memory Used (Pages)
-		        virtual_mem = return_virtual_mem(pid);
-		        printf("VMEM: %s\n", virtual_mem);
-	            break;
+	        assign_virtual_mem(pid, virtual_mem);
+		printf("VMEM: %s\n", virtual_mem);
+	        break;
+
+            /* Run on -c presence and print command line
+	       that started process */
             case 'c':
-		        //Display Command Line which started this process
-                cmd_line = return_command_line(pid);
-		        printf("CMD:  %s\n", cmd_line);
-		        break;
+                assign_command_line(pid, cmd_line);
+		printf("CMD:  %s\n", cmd_line);
+		break;
+
+            /* No options. Per assignment, exit with no output. */
             default:
 		        exit(EXIT_FAILURE);
         }
     }
     
+    /* Exit sucessfully after processing all arguments */
     exit(EXIT_SUCCESS);
 }
