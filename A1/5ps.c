@@ -22,40 +22,39 @@ int main(int argc, char *argv[]) {
     bool pid_was_set = false;
 
     char state_char;
-    char* uptime;
+    char time[100];
     char* virtual_mem;
     char* cmd_line;
-
     while ((op = getopt(argc, argv, "p:stvc")) != GETOPT_FAILURE) {
         switch (op) {
-	    case 'p':
-		//Display PID when given PID value as argument
- 		pid = atoi(optarg);
-		pid_was_set = true;
-		printf("PID:  %d\n", pid);
-	        break;
+	        case 'p':
+		        //Display PID when given PID value as argument
+ 		        pid = atoi(optarg);
+		        pid_was_set = true;
+		        printf("PID:  %d\n", pid);
+	            break;
             case 's':
-	        //Single Character State Information
-                state_char = return_state_character(pid);
+	            //Single Character State Information
+                assign_state_character(pid, state_char);
                 printf("STAT: %c\n", state_char);
-		break;
+		        break;
             case 't':
-	        //utime information
-		uptime = return_uptime(pid);
-		printf("TIME: %s\n", uptime);
-	        break;
+	            //utime information
+		        assign_time(pid, time);
+		        printf("TIME: %s\n", time);
+	            break;
             case 'v':
-		//Virtual Memory Used (Pages)
-		virtual_mem = return_virtual_mem(pid);
-		printf("VMEM: %s\n", virtual_mem);
-	        break;
+		        //Virtual Memory Used (Pages)
+		        virtual_mem = return_virtual_mem(pid);
+		        printf("VMEM: %s\n", virtual_mem);
+	            break;
             case 'c':
-		//Display Command Line which started this process
+		        //Display Command Line which started this process
                 cmd_line = return_command_line(pid);
-		printf("CMD:  %s\n", cmd_line);
-		break;
+		        printf("CMD:  %s\n", cmd_line);
+		        break;
             default:
-		exit(EXIT_FAILURE);
+		        exit(EXIT_FAILURE);
         }
     }
     
