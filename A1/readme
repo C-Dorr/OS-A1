@@ -37,12 +37,22 @@ Using Program:
 Shortcomings:
    5ps meets functional critera listed in the assignment. However, the
    notable shortcomings are that
-       
-       1. Compilation warnings regarding [FILL WARNING DETAILS]
+
+       1. Warnings about assignment suppressions.
 
        2. Data about a process will display in the order the options are
           given. For instance './5ps -c -t' provides different, but
           equivalent, output than './5ps -t -c'.
+       
+       3. Default PID = 1 does not return appropriate command line.
+
+       4. Returned command lines are the full path to the command, not
+          the shortened one.
+           
+              ex. If my python3 command lives at /cdorr/bin/python/python3
+                  ps -ely would show 'python3' as the cmdline
+                  5ps -c would show '/cdorr/bin/python/python3' as the 
+                  cmdline
 
 
  
