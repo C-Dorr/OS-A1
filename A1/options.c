@@ -18,6 +18,18 @@
 
 #include "options.h"
 
+/*
+ * Function: get_state_character
+ *
+ * Input:
+ *     pid: Process ID given by the user, or 1 if not provided
+ *
+ * Output:
+ *     Returns character of process state
+ *
+ * Description: Reads stat file for state character and returns
+ *              it.
+ */
 char get_state_character(int pid) {
     // -s
     char stat_proc_string[100];
@@ -42,6 +54,21 @@ char get_state_character(int pid) {
     }
 }
 
+
+/*
+ * Function: assign_time
+ *
+ * Input:
+ *     pid: Process ID given by the user, or 1 if not provided
+ *     ret: Pointer to string defined in main. Output string 
+ *          written here.
+ *
+ * Output:
+ *     No output. Result is written to pre-allocated memory.
+ *
+ * Description: Reads stat file for utime and stime and calculates
+ *              time in seconds. Formats to HH:MM:SS.
+ */
 void assign_time(int pid, char* ret) { 
     // -t
     char stat_proc_string[100];
@@ -50,23 +77,29 @@ void assign_time(int pid, char* ret) {
     if (stat_dir != NULL)
     {
         struct dirent* entry;
-        // parse stat for single-character state
         while (entry = readdir(stat_dir))
         {
             if (strtol(entry->d_name, NULL, 10) == pid)
             {
+		//Open appropriate file.
                 char stat_string[25];
                 sprintf(stat_string, "/proc/%d/stat", pid);
                 FILE* stat_file = fopen(stat_string, "r");
-                char dummy;
+
+		//Declare utime and stime variables. Parse into these.
+		//Close file once completed
                 long unsigned int utime, stime;
                 fscanf(stat_file, "%*d %*s %*c %*d %*d %*d %*d %*d %*u %*lu %*lu %*lu %*lu");
                 fscanf(stat_file, "%lu %lu", &utime, &stime);
                 fclose(stat_file);
+
+		//Declare time variables. Calculate time in seconds
                 long unsigned int hours, minutes, seconds, total_seconds = (utime + stime) / (long unsigned int)sysconf(_SC_CLK_TCK);
                 hours = total_seconds / 3600;
                 minutes = (total_seconds - (3600 * hours)) / 60;
                 seconds = total_seconds - (3600 * hours) - (minutes * 60);
+
+		//Format time to HH:MM:SS
                 char hh[3], mm[3], ss[3];
                 if (hours < 10)
                     sprintf(hh, "0%lu", hours);
