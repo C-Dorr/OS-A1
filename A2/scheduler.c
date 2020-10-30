@@ -7,8 +7,25 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
-//struct itimerval timer = {};
+struct timer {
+    clock_t start_val;
+    clock_t curr_val;
+    clock_t elapsed_val;
+};
+
+void timer_init(struct timer t) {
+  t.start_val = clock();
+  printf("Started clock.\n");
+}
+
+void timer_print(struct timer t) {
+  t.curr_val = clock();
+  t.elapsed_val = t.curr_val - t.start_val;
+
+  printf("Currently %lu, %lu has elapsed.\n", t.curr_val, t.elapsed_val );
+}
 
 void begin_process_information(int proc_num, int priority, int pid, long unsigned int value) {
 	printf("Process %d: Priority %d, PID %d: STARTING\n Beginning" 
