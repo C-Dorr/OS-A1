@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
 	print_id();
 	printf("I just got started. I am starting with the number %lu to find the next prime number.\n\n", calculatedPrime);
 	
-	proc_num = argv[0];
-	priority = argv[1];
+	proc_num = atoi(argv[1]);
+	priority = atoi(argv[2]);
 	
 	signal(SIGTERM, handler);
 	signal(SIGCONT, handler);
@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
+	exit(EXIT_SUCCESS);
 }
 
 void print_id()
