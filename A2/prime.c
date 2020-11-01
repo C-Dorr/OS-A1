@@ -16,6 +16,7 @@ int checkPrimeAndPrint(unsigned long int toCheck);
 // argv must contain process number and priority
 int main(int argc, char *argv[])
 {
+	printf("In prime\n");
 	proc_num = atoi(argv[1]);
 	priority = atoi(argv[2]);
 	
@@ -43,7 +44,7 @@ int main(int argc, char *argv[])
 				if (checkPrimeAndPrint(numberToCheck) == 1)
 				{
 					highestPrime = numberToCheck;
-					printf("prime number is %lu \n", highestPrime);
+					printf("Prime number is %lu \n", highestPrime);
 					numPrinted++;
 				}
 				numberToCheck++;
@@ -72,7 +73,7 @@ void handler(int signal)
 	{
 		case(SIGTSTP):
 			// suspend process
-			print_status("I just got resumed.");
+			print_status("I just got suspended.");
 			paused = true;
 			break;
 		case(SIGCONT):
