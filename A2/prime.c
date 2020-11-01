@@ -16,11 +16,11 @@ int checkPrimeAndPrint(unsigned long int toCheck);
 // argv must contain process number and priority
 int main(int argc, char *argv[])
 {
-	print_id();
-	printf("I just got started. I am starting with the number %lu to find the next prime number.\n\n", calculatedPrime);
-	
 	proc_num = atoi(argv[1]);
 	priority = atoi(argv[2]);
+	
+	print_id();
+	printf("I just got started. I am starting with the number %lu to find the next prime number.\n\n", calculatedPrime);
 	
 	signal(SIGTERM, handler);
 	signal(SIGCONT, handler);
