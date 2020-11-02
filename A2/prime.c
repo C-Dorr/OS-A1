@@ -16,7 +16,6 @@ int checkPrimeAndPrint(unsigned long int toCheck);
 // argv must contain process number and priority
 int main(int argc, char *argv[])
 {
-	printf("In prime\n");
 	proc_num = atoi(argv[1]);
 	priority = atoi(argv[2]);
 	
@@ -27,7 +26,6 @@ int main(int argc, char *argv[])
 	signal(SIGCONT, handler);
 	signal(SIGTSTP, handler);
 	
-	int numPrinted = 0;
 	long unsigned int numberToCheck = calculatedPrime + 1;
 	while (!terminated)
 	{
@@ -38,32 +36,28 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			// if no pause signal has been received, continue finding prime number
-			while (numPrinted < 10)
+		// if no pause signal has been received, continue finding prime number
+			if (checkPrimeAndPrint(numberToCheck) == 1)
 			{
-				if (checkPrimeAndPrint(numberToCheck) == 1)
-				{
-					highestPrime = numberToCheck;
-					printf("Prime number is %lu \n", highestPrime);
-					numPrinted++;
-				}
-				numberToCheck++;
+				highestPrime = numberToCheck;
+				//printf("Prime number is %lu \n", highestPrime);
 			}
+			numberToCheck++;
 		}
 	}
 	exit(EXIT_SUCCESS);
 }
 
 void print_id()
-{
+{	
 	printf("Process %d: My priority is %d, my PID is %d: ", proc_num, priority, getpid());
 }
 
 void print_status(char* status)
 {
 	print_id();
-	printf(" %s ", status);
-	printf("Highest prime number I found is %lu. ", highestPrime);
+	printf("%s", status);
+	printf("Highest prime number I found is %lu.\n\n", highestPrime);
 }
 
 void handler(int signal)

@@ -4,11 +4,9 @@
  */
 
 #define SCHEDULER_H_
-
-struct timer;                                                                                                                                                                                                                                                                                               
-
-void timer_init(struct timer t);
-void timer_print(struct timer t);
+    
+void timer_handler(int signal);
+void timer_init();
 
 void handle_process(int signal, int pid, int priority);
 

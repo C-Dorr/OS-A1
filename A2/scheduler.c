@@ -8,23 +8,31 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
+#include <sys/time.h>
+#include <signal.h>
+#include <string.h>
 
-struct timer {
-    clock_t start_val;
-    clock_t curr_val;
-    clock_t elapsed_val;
-};
 
-void timer_init(struct timer t) {
-  t.start_val = clock();
-  printf("Started clock.\n");
+void timer_handler(int signal/* info */) {
+  //Start process with this info (info)
 }
 
-void timer_print(struct timer t) {
-  t.curr_val = clock();
-  t.elapsed_val = t.curr_val - t.start_val;
+void timer_init() {
+    struct sigaction sa;
+    struct itimerval timer;
 
-  printf("Currently %lu, %lu has elapsed.\n", t.curr_val, t.elapsed_val );
+    memset(&timer, 0, sizeof(sa));
+    
+    sa.sa_handler = &timer_handler;
+    
+    sigaction(SIGALRM, &sa, NULL);
+    
+    timer.it_value.tv_sec = 1;
+    timer.it_value.tv_usec= 0;
+    timer.it_interval.tv_sec = 1;
+    timer.it_interval.tv_usec= 0;
+    
+    setitimer(ITIMER_REAL, &timer, NULL);   
 }
 
 void begin_process_information(int proc_num, int priority, int pid, long unsigned int value) {
