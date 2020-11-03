@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdbool.h>
 
 long unsigned int calculatedPrime = 123400003;
-long unsigned int highestPrime = calculatedPrime;
+long unsigned int highestPrime;
 bool paused = false, terminated = false;
 int proc_num, priority;
 
@@ -16,6 +17,7 @@ int checkPrimeAndPrint(unsigned long int toCheck);
 // argv must contain process number and priority
 int main(int argc, char *argv[])
 {
+	highestPrime = calculatedPrime;
 	proc_num = atoi(argv[1]);
 	priority = atoi(argv[2]);
 	
@@ -57,7 +59,7 @@ void print_status(char* status)
 {
 	print_id();
 	printf("%s", status);
-	printf("Highest prime number I found is %lu.\n\n", highestPrime);
+	printf(" Highest prime number I found is %lu.\n\n", highestPrime);
 }
 
 void handler(int signal)

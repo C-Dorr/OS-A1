@@ -34,22 +34,23 @@ void resume_process_statement(int proc_num, int priority, int pid, long unsigned
 //Display process information when process is finished
 void finished_process_statement(int proc_num, int priority, int pid, long unsigned int prime);
 
-void parse_input_file(FILE* f, process processes[]);
+void parse_input_file(FILE* f, struct process processes[]);
 
 const char INPUT_PATH[] = "./input.txt";
 
 int process_count = 0;
 int zeroed_process_count = 0;
 
-process process_list[100];
+struct process process_list[100];
 
-process curr_tick_proc;
-process last_tick_proc;
+//curr_proc and last_proc are indexes of the processes currently and previously running on the current tick
+int curr_proc;
+int last_proc;
 
 int main (int argc, char* argv[]) {
 
-    curr_tick_proc.number = -1;
-    last_tick_proc.number = -1;
+    curr_proc = -1;
+    last_proc = -1;
 
     FILE* input_file = fopen(INPUT_PATH, "r");
     parse_input_file(input_file, process_list);
@@ -62,10 +63,13 @@ int main (int argc, char* argv[]) {
 
 
 void timer_handler(int signal) {  
+    printf("TICK: %d\n", ticks);
     //Decrement burst of procedure that ran last tick
-    if (curr_tick_proc.number != -1) {
-        curr_tick_proc.burst--;
-        if (curr_tick_proc.burst == 0) {
+    //tick = 4
+    //last_proc = 2, curr_proc = 2
+    if (curr_proc >= 0) {
+        process_list[curr_proc].burst--;
+        if (process_list[curr_proc].burst <= 0) {
             zeroed_process_count++;
         }
     }
@@ -75,65 +79,86 @@ void timer_handler(int signal) {
             exit(EXIT_SUCCESS);
     }
 
-    last_tick_proc = curr_tick_proc;
+    last_proc = curr_proc;
+
+
+/*
+0 1 6 3
+1 2 4 2
+2 2 2 1
+3 4 6 2
+4 6 4 3
+5 7 2 4
+*/
+//tick=4
 
 
     /* Assign a running process */
-    //For each process
+    //For each 
+    //last_proc = curr_proc = 2
     for(int i = 0; i < process_count; i++) {
         //If the process has arrived
         if (process_list[i].arrival_time <= ticks && process_list[i].burst > 0) {
 
             //The first arriving process is assigned
-            if (curr_tick_proc.number == -1) {
-                curr_tick_proc = process_list[i];
+            if (curr_proc == -1) {
+                curr_proc = i;
             }
 
             //And this process is a higher priority than the running process
-            if (curr_tick_proc.priority > process_list[i].priority) {
+            if (process_list[curr_proc].priority > process_list[i].priority) {
                 //Then change the running process to this process
-                curr_tick_proc = process_list[i];
+                curr_proc = i;
             }
 
             //However if they have the same priority
-            else if (curr_tick_proc.priority == process_list[i].priority) {
+            else if (process_list[curr_proc].priority == process_list[i].priority) {
                 //Break the tie on sooner arrival time
-                if (curr_tick_proc.arrival_time > process_list[i].priority) {
-                    curr_tick_proc = process_list[i];
+                if (process_list[curr_proc].arrival_time > process_list[i].priority) {
+                    curr_proc = i;
                 }
             }
         }
     }
 
-
-    if (last_tick_proc.number != -1) {
-        if (last_tick_proc.burst > 0) {
+//last_proc = 2, curr_proc = 1
+    if (last_proc >= 0) {
+        if (process_list[last_proc].burst > 0 && last_proc != curr_proc) {
             //SUSPEND
-            kill(last_tick_proc.pid, SIGTSTP);
-        } else {
+            kill(process_list[last_proc].pid, SIGTSTP);
+        } 
+        if (process_list[last_proc].burst == 0) {
             //TERMINATE
-            kill(last_tick_proc.pid, SIGTERM);
+            kill(process_list[last_proc].pid, SIGTERM);
+            printf("%d\n", curr_proc);
         }
     }
 
-    if (curr_tick_proc.number != -1) {
-        if (curr_tick_proc.pid < 0) {
+    if (curr_proc >= 0) {
+        if (process_list[curr_proc].pid < 0) {
             //NEW PROCESS
             int fork_pid = fork();
 
+            //Child process
             if (fork_pid == 0) {
                 char proc_num[10], priority_num[10];
 
-                sprintf(proc_num, "%d", curr_tick_proc.number);
-                sprintf(priority_num, "%d", curr_tick_proc.priority);
+                //Assign prime.c arguments to strings
+                sprintf(proc_num, "%d", process_list[curr_proc].number);
+                sprintf(priority_num, "%d", process_list[curr_proc].priority);
+
+                //Start child process
                 char* args[] = {"./prime", proc_num, priority_num, NULL};
                 execvp(args[0], args);
-            } else if (fork_pid > 0) {
-                curr_tick_proc.pid = fork_pid;
+
             } 
-        } else {
+            //Parent/Scheduler
+            else if (fork_pid > 0) {
+                process_list[curr_proc].pid = fork_pid;
+            } 
+        } else if (last_proc != curr_proc) {
             //RESUME
-            kill(curr_tick_proc.pid, SIGCONT);
+            kill(process_list[curr_proc].pid, SIGCONT);
         }
     }
 
@@ -144,7 +169,7 @@ void timer_init() {
     struct sigaction sa;
     struct itimerval timer;
 
-    memset(&timer, 0, sizeof(sa));
+    memset(&sa, 0, sizeof(sa));
     
     sa.sa_handler = &timer_handler;
     
@@ -158,7 +183,7 @@ void timer_init() {
     setitimer(ITIMER_REAL, &timer, NULL);   
 }
 
-void parse_input_file(FILE* f, process processes[]) {
+void parse_input_file(FILE* f,struct process processes[]) {
     process_count = 0;
     while (fscanf(f, "%d %d %d %d\n", &processes[process_count].number, 
                                       &processes[process_count].arrival_time, 
