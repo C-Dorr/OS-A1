@@ -1,6 +1,11 @@
 /*
  *	Assignment 2 Scheduler & Main
  *	Authors: Christopher Dorr & Jordyn Marlow
+ *  Date of Submission: 11/04/2020
+ *  main.c
+ *  This program runs a handler every clock tick, 1 second by default,
+ *  and decides whether or not to start, suspend, resume, or terminate
+ *  a child program which calculates higher and higher mains.
  */
 
 #include <stdio.h>      
@@ -54,7 +59,8 @@ void resume_process_statement(int proc_num, int priority, int pid);
 //Display process information when process is finished
 void terminate_process_statement(int proc_num, int priority, int pid);
 
-// parses input file, assigns contents to appropriate fields in a process struct, adds struct to process_list array
+// parses input file, assigns contents to appropriate fields in a process struct, 
+//      adds struct to process_list array
 void parse_input_file(FILE* f, struct process processes[]);
 
 

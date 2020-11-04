@@ -1,6 +1,9 @@
 /*
  *	Assignment 2 Child
  *	Authors: Christopher Dorr & Jordyn Marlow
+ *  prime.c
+ *  This is the child of main.c which is started based on
+ *  our preemptive scheduler
  */
 
 #include <stdio.h>

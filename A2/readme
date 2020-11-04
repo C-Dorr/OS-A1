@@ -3,7 +3,7 @@ Assignment 2 README
 Assignment 2 was completed by Christopher Dorr & Jordyn Marlow
 
 Compilation:
-    In dorrMarlow1/ compile using the commands:
+    In dorrMarlow2/ compile using the commands:
 
         gcc -o prime prime.c
         gcc -o main main.c
@@ -24,9 +24,19 @@ Using Program:
 	
 	
 	Main contains the main function and the code for the scheduler.
+	
 	It expects a file called 'input.txt' to be in the same directory.
+	'input.txt' should be formatted with rows of 4 numbers separated by 1 space.
+	after the 4th number, there should be a new line. No following line should be
+	present after the last row containing numbers. An example of input.txt has 
+	been included in dorrMarlow.zip.
+
 	This file contains process numbers, arrival times, bursts, and 
 	priorities of multiple processes.
+
+	Main is run with no arguments. Run with
+		'./main'
+	in the folder it exists in.
 	
 Shortcomings:
    The scheduler meets functional critera listed in the assignment. However, the
