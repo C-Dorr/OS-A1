@@ -1,3 +1,8 @@
+/*
+ *	Assignment 2 Scheduler
+ *	Authors: Christopher Dorr & Jordyn Marlow
+ */
+
 #include <stdio.h>      
 #include <stdlib.h>
 #include <unistd.h>
@@ -5,8 +10,10 @@
 #include <sys/time.h>
 #include <signal.h>
 #include <string.h>
-//#include "scheduler.h"
-    
+
+const char INPUT_PATH[] = "./input.txt"; // path to input file
+
+// struct for info given by input file
 struct process {
     int number;
     int arrival_time;
@@ -15,11 +22,19 @@ struct process {
     int pid;
 };
 
-int ticks = 0;
-void timer_handler(int signal);
-void timer_init();
+struct process process_list[100]; // array of all processes from input file
 
-void handle_process(int signal, int pid, int priority);
+int ticks = 0; // current tick number
+int process_count = 0; // total number of processes
+int zeroed_process_count = 0; // number of processes that have bee terminated
+int curr_proc; // process_list index of the currently running process
+int last_proc; // process_list index of the process running at the last tick
+
+// handler for SIGALRM signal from timer
+void timer_handler(int signal);
+
+// initialize timer
+void timer_init();
 
 //Display first time scheduled process information
 void begin_process_statement(int proc_num, int priority, int pid, long unsigned int value);
@@ -30,141 +45,130 @@ void suspend_process_statement(int proc_num, int priority, int pid, long unsigne
 //Display process information when process is resumed
 void resume_process_statement(int proc_num, int priority, int pid, long unsigned int prime);
 
-
 //Display process information when process is finished
 void finished_process_statement(int proc_num, int priority, int pid, long unsigned int prime);
 
+// parses input file, assigns contents to appropriate fields in a process struct, adds struct to process_list array
 void parse_input_file(FILE* f, struct process processes[]);
 
-const char INPUT_PATH[] = "./input.txt";
-
-int process_count = 0;
-int zeroed_process_count = 0;
-
-struct process process_list[100];
-
-//curr_proc and last_proc are indexes of the processes currently and previously running on the current tick
-int curr_proc;
-int last_proc;
 
 int main (int argc, char* argv[]) {
 
+	// curr_proc and last_proc do not exist yet
     curr_proc = -1;
     last_proc = -1;
 
+	// read input file and store info in process_list
     FILE* input_file = fopen(INPUT_PATH, "r");
     parse_input_file(input_file, process_list);
     fclose(input_file);    
 
     //Start scheduler clock
     timer_init();
+    
+    // scheduler must continue running until all child processes are terminated and exit() is called
     while(1);
 }
 
+void timer_handler(int signal) {
 
-void timer_handler(int signal) {  
-    printf("TICK: %d\n", ticks);
-    //Decrement burst of procedure that ran last tick
-    //tick = 4
-    //last_proc = 2, curr_proc = 2
-    if (curr_proc >= 0) {
-        process_list[curr_proc].burst--;
-        if (process_list[curr_proc].burst <= 0) {
+	// new tick, curr_proc is now last_proc
+	last_proc = curr_proc;
+	
+	// if there was a process running in the last tick
+    if (last_proc >= 0) {
+    	//Decrement burst of process from the last tick
+        process_list[last_proc].burst--;
+        // increment zeroed_process_count if process from last tick is terminated
+        if (process_list[last_proc].burst <= 0) {
             zeroed_process_count++;
         }
     }
-
+    
+    // if a process was completed in the last tick
+	if (last_proc >= 0 && process_list[last_proc].burst == 0) {
+        // terminate the process from the last tick
+        kill(process_list[last_proc].pid, SIGTERM);
+        // no currently running process anymore
+        curr_proc = -1;
+    }
+    
+    // if all processes have been terminated, exit scheduler
     if(zeroed_process_count == process_count && process_count != 0) {
-        printf("exiting\n");
-            exit(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS);
     }
 
-    last_proc = curr_proc;
-
-
-/*
-0 1 6 3
-1 2 4 2
-2 2 2 1
-3 4 6 2
-4 6 4 3
-5 7 2 4
-*/
-//tick=4
-
-
-    /* Assign a running process */
-    //For each 
-    //last_proc = curr_proc = 2
+    // for each process
     for(int i = 0; i < process_count; i++) {
-        //If the process has arrived
+    
+        //If the process has arrived and is not terminated
         if (process_list[i].arrival_time <= ticks && process_list[i].burst > 0) {
 
-            //The first arriving process is assigned
+            // if there is no running process, set curr_proc to the first valid process
             if (curr_proc == -1) {
                 curr_proc = i;
             }
 
-            //And this process is a higher priority than the running process
-            if (process_list[curr_proc].priority > process_list[i].priority) {
-                //Then change the running process to this process
-                curr_proc = i;
-            }
-
-            //However if they have the same priority
-            else if (process_list[curr_proc].priority == process_list[i].priority) {
-                //Break the tie on sooner arrival time
-                if (process_list[curr_proc].arrival_time > process_list[i].priority) {
-                    curr_proc = i;
-                }
-            }
+	        // if process at index i has a higher priority than that of curr_proc
+	        if (process_list[curr_proc].priority > process_list[i].priority) {
+	            // change the running process to process at index i
+	            curr_proc = i;
+	        }
+	        // if curr_proc and proc at index i have same priority, break tie with arrival time
+	        else if (process_list[curr_proc].priority == process_list[i].priority) {
+	            // break the tie on sooner arrival time
+	            if (process_list[curr_proc].arrival_time > process_list[i].priority) {
+	                curr_proc = i;
+	            }
+	        }
         }
     }
 
-//last_proc = 2, curr_proc = 1
-    if (last_proc >= 0) {
-        if (process_list[last_proc].burst > 0 && last_proc != curr_proc) {
-            //SUSPEND
-            kill(process_list[last_proc].pid, SIGTSTP);
-        } 
-        if (process_list[last_proc].burst == 0) {
-            //TERMINATE
-            kill(process_list[last_proc].pid, SIGTERM);
-            printf("%d\n", curr_proc);
-        }
+	// if there was a process running at the last tick but it isn't terminated yet
+    if (last_proc >= 0 && process_list[last_proc].burst > 0 && last_proc != curr_proc) {
+        // send the suspend signal to the process running in the last tick
+        kill(process_list[last_proc].pid, SIGTSTP);
     }
 
+	// if there is a process running in the current tick
     if (curr_proc >= 0) {
+    
+    	// if the process running in the current tick does not have a pid
         if (process_list[curr_proc].pid < 0) {
-            //NEW PROCESS
+        
+            // fork and start new process
             int fork_pid = fork();
 
             //Child process
             if (fork_pid == 0) {
+            
+            	// pass process number and priority number to child process prime.c
                 char proc_num[10], priority_num[10];
-
-                //Assign prime.c arguments to strings
+                
                 sprintf(proc_num, "%d", process_list[curr_proc].number);
                 sprintf(priority_num, "%d", process_list[curr_proc].priority);
 
-                //Start child process
+                // start new child process
                 char* args[] = {"./prime", proc_num, priority_num, NULL};
                 execvp(args[0], args);
-
             } 
             //Parent/Scheduler
             else if (fork_pid > 0) {
+            	// assign the pid returned from fork to pid field in curr_proc struct
                 process_list[curr_proc].pid = fork_pid;
             } 
-        } else if (last_proc != curr_proc) {
-            //RESUME
+        }
+        // if we are switching processes in this tick
+        else if (last_proc != curr_proc) {
+            // send resume signal to curr_proc
             kill(process_list[curr_proc].pid, SIGCONT);
         }
     }
-
+	// increment ticks
     ticks++;
 }
 
+/* initialize timer so send SIGALRM every second */
 void timer_init() {
     struct sigaction sa;
     struct itimerval timer;
@@ -183,13 +187,14 @@ void timer_init() {
     setitimer(ITIMER_REAL, &timer, NULL);   
 }
 
+/* parse input file and store data in struct array process_list */
 void parse_input_file(FILE* f,struct process processes[]) {
     process_count = 0;
     while (fscanf(f, "%d %d %d %d\n", &processes[process_count].number, 
                                       &processes[process_count].arrival_time, 
                                       &processes[process_count].burst,  
                                       &processes[process_count].priority) != EOF) {   
-        //Initilizing to a pid of -1 will let us know if the process has started
+        //Initializing to a pid of -1 will let us know the process has not started
         processes[process_count].pid = -1;
         process_count++; 
     }

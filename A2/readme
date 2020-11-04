@@ -1,0 +1,45 @@
+Assignment 2 README
+
+Assignment 2 was completed by Christopher Dorr & Jordyn Marlow
+
+Compilation:
+    In dorrMarlow1/ compile using the commands:
+
+        gcc -o prime prime.c
+        gcc -o main main.c
+
+    this will provide executables which can be run as described in the 
+    following section of this readme.
+
+Using Program:
+
+	Prime is a standalone program that will run forever finding the 
+	highest prime number. It takes two arguments:
+	
+	proc_num	Process number given by main. This is for output
+				purposes only.
+	
+	priority	Priority number given by main. This is for output
+				purposes only.
+	
+	
+	Main contains the main function and the code for the scheduler.
+	It expects a file called 'input.txt' to be in the same directory.
+	This file contains process numbers, arrival times, bursts, and 
+	priorities of multiple processes.
+	
+Shortcomings:
+   The scheduler meets functional critera listed in the assignment. However, the
+   notable shortcomings are that
+
+       1. When switching processes, the "I just got resumed", "I just got suspended",
+       	  "I just completed my task" output statements may be out of order. For
+       	  example, when Process 2 is suspended and Process 1 resumes, stdout will
+       	  have the "I have resumed" statement from Process 1 before the "I have been
+       	  suspended" statement from Process 2.
+
+       2. The "I just completed my task" output statement of the last process
+       	  prints to stdout after the scheduler has exited.
+
+
+ 
