@@ -222,24 +222,24 @@ void parse_input_file(FILE* f,struct process processes[]) {
 }
 
 void scheduler_time() {
-    printf("Scheduler: Time now: %d seconds\n", ticks);
+    printf("Scheduler: Time now: %d seconds\n\n", ticks);
 }
 
 void begin_process_statement(int proc_num, int priority, int pid) {
-    printf("Process %d: Priority %d, PID %d: STARTING\n", proc_num, priority, pid);
+    printf("Process %d: Priority %d, PID %d: STARTING\n\n", proc_num, priority, pid);
 }
 
 void suspend_process_statement(int proc_num, int priority, int pid) {
-    printf("Process %d: Priority %d, PID %d: SUSPENDING\n", proc_num, priority, pid); 
+    printf("Process %d: Priority %d, PID %d: SUSPENDING\n\n", proc_num, priority, pid); 
 }
 
 //Display process information when process is resumed
 void resume_process_statement(int proc_num, int priority, int pid) {
-    printf("Process %d: Priority %d, PID %d, RESUMING\n", proc_num, priority, pid);
+    printf("Process %d: Priority %d, PID %d, RESUMING\n\n", proc_num, priority, pid);
 }
 
 //Display process information when process is resumed
 void terminate_process_statement(int proc_num, int priority, int pid) {
-    printf("Process %d: Priority %d, PID %d, FINISHED\n", proc_num, priority, pid);
+    printf("Process %d: Priority %d, PID %d, FINISHED\n\n", proc_num, priority, pid);
 }
 
