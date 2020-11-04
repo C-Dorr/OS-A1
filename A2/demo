@@ -1,0 +1,130 @@
+###Run 1
+##Input 1
+
+0 2 3 2
+1 4 4 3
+2 3 1 1
+3 5 2 2
+
+##Output 1
+
+Scheduler: Time now: 0 seconds
+Scheduler: Time now: 1 seconds
+Scheduler: Time now: 2 seconds
+Process 0: Priority 2, PID -1: STARTING
+Process 0: My priority is 2, my PID is 17105: I just got started. I am starting with the number 123400003 to find the next prime number.
+
+Scheduler: Time now: 3 seconds
+Process 0: Priority 2, PID 17105: SUSPENDING
+Process 0: My priority is 2, my PID is 17105: I just got suspended. Highest prime number I found is 123400003.
+
+Process 2: Priority 1, PID -1: STARTING
+Process 2: My priority is 1, my PID is 17106: I just got started. I am starting with the number 123400003 to find the next prime number.
+
+Scheduler: Time now: 4 seconds
+Process 2: Priority 1, PID 17106, FINISHED
+Process 0: Priority 2, PID 17105, RESUMING
+Process 0: My priority is 2, my PID is 17105: I just got resumed. Highest prime number I found is 123400021.
+
+Process 2: My priority is 1, my PID is 17106: I completed my task and I am exiting. Highest prime number I found is 123400003.
+
+Scheduler: Time now: 5 seconds
+Scheduler: Time now: 6 seconds
+Process 0: Priority 2, PID 17105, FINISHED
+Process 3: Priority 2, PID -1: STARTING
+Process 3: My priority is 2, my PID is 17107: I just got started. I am starting with the number 123400003 to find the next prime number.
+
+Process 0: My priority is 2, my PID is 17105: I completed my task and I am exiting. Highest prime number I found is 123400027.
+
+Scheduler: Time now: 7 seconds
+Scheduler: Time now: 8 seconds
+Process 3: Priority 2, PID 17107, FINISHED
+Process 1: Priority 3, PID -1: STARTING
+Process 1: My priority is 3, my PID is 17108: I just got started. I am starting with the number 123400003 to find the next prime number.
+
+Process 3: My priority is 2, my PID is 17107: I completed my task and I am exiting. Highest prime number I found is 123400021.
+
+Scheduler: Time now: 9 seconds
+Scheduler: Time now: 10 seconds
+Scheduler: Time now: 11 seconds
+Scheduler: Time now: 12 seconds
+Process 1: Priority 3, PID 17108, FINISHED
+cdorr@cdorr-VirtualBox:~/OS/OS451/A2$ Process 1: My priority is 3, my PID is 17108: I completed my task and I am exiting. Highest prime number I found is 123400027.
+
+
+##Input 2
+0 1 6 3
+1 2 4 2
+2 2 2 1
+3 4 6 2
+4 6 4 3
+5 7 2 4
+
+##Output 2
+Scheduler: Time now: 0 seconds
+Scheduler: Time now: 1 seconds
+Process 0: Priority 3, PID -1: STARTING
+Process 0: My priority is 3, my PID is 17347: I just got started. I am starting with the number 123400003 to find the next prime number.
+
+Scheduler: Time now: 2 seconds
+Process 0: Priority 3, PID 17347: SUSPENDING
+Process 2: Priority 1, PID -1: STARTING
+Process 2: My priority is 1, my PID is 17348: I just got started. I am starting with the number 123400003 to find the next prime number.
+
+Process 0: My priority is 3, my PID is 17347: I just got suspended. Highest prime number I found is 123400003.
+
+Scheduler: Time now: 3 seconds
+Scheduler: Time now: 4 seconds
+Process 2: Priority 1, PID 17348, FINISHED
+Process 1: Priority 2, PID -1: STARTING
+Process 1: My priority is 2, my PID is 17349: I just got started. I am starting with the number 123400003 to find the next prime number.
+
+Process 2: My priority is 1, my PID is 17348: I completed my task and I am exiting. Highest prime number I found is 123400021.
+
+Scheduler: Time now: 5 seconds
+Scheduler: Time now: 6 seconds
+Scheduler: Time now: 7 seconds
+Scheduler: Time now: 8 seconds
+Process 1: Priority 2, PID 17349, FINISHED
+Process 1: My priority is 2, my PID is 17349: I completed my task and I am exiting. Highest prime number I found is 123400027.
+
+Process 3: Priority 2, PID -1: STARTING
+Process 3: My priority is 2, my PID is 17350: I just got started. I am starting with the number 123400003 to find the next prime number.
+
+Scheduler: Time now: 9 seconds
+Scheduler: Time now: 10 seconds
+Scheduler: Time now: 11 seconds
+Scheduler: Time now: 12 seconds
+Scheduler: Time now: 13 seconds
+Scheduler: Time now: 14 seconds
+Process 3: Priority 2, PID 17350, FINISHED
+Process 0: Priority 3, PID 17347, RESUMING
+Process 0: My priority is 3, my PID is 17347: I just got resumed. Highest prime number I found is 123400021.
+
+Process 3: My priority is 2, my PID is 17350: I completed my task and I am exiting. Highest prime number I found is 123400027.
+
+Scheduler: Time now: 15 seconds
+Scheduler: Time now: 16 seconds
+Scheduler: Time now: 17 seconds
+Scheduler: Time now: 18 seconds
+Scheduler: Time now: 19 seconds
+Process 0: Priority 3, PID 17347, FINISHED
+Process 0: My priority is 3, my PID is 17347: I completed my task and I am exiting. Highest prime number I found is 123400049.
+
+Process 4: Priority 3, PID -1: STARTING
+Process 4: My priority is 3, my PID is 17352: I just got started. I am starting with the number 123400003 to find the next prime number.
+
+Scheduler: Time now: 20 seconds
+Scheduler: Time now: 21 seconds
+Scheduler: Time now: 22 seconds
+Scheduler: Time now: 23 seconds
+Process 4: Priority 3, PID 17352, FINISHED
+Process 4: My priority is 3, my PID is 17352: I completed my task and I am exiting. Highest prime number I found is 123400027.
+
+Process 5: Priority 4, PID -1: STARTING
+Process 5: My priority is 4, my PID is 17353: I just got started. I am starting with the number 123400003 to find the next prime number.
+
+Scheduler: Time now: 24 seconds
+Scheduler: Time now: 25 seconds
+Process 5: Priority 4, PID 17353, FINISHED
+cdorr@cdorr-VirtualBox:~/OS/OS451/A2$ Process 5: My priority is 4, my PID is 17353: I completed my task and I am exiting. Highest prime number I found is 123400021.

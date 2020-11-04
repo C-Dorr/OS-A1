@@ -1,5 +1,5 @@
 /*
- *	Assignment 2 Scheduler
+ *	Assignment 2 Scheduler & Main
  *	Authors: Christopher Dorr & Jordyn Marlow
  */
 
@@ -10,6 +10,9 @@
 #include <sys/time.h>
 #include <signal.h>
 #include <string.h>
+
+const int INDEX_NOT_ASSIGNED = -1; //Represents index has not been chosen.
+const int STR_LEN = 10; // Max string length
 
 const char INPUT_PATH[] = "./input.txt"; // path to input file
 
@@ -36,17 +39,20 @@ void timer_handler(int signal);
 // initialize timer
 void timer_init();
 
+//Print seconds tracked by scheduler
+void scheduler_time();
+
 //Display first time scheduled process information
-void begin_process_statement(int proc_num, int priority, int pid, long unsigned int value);
+void begin_process_statement(int proc_num, int priority, int pid);
 
 //Display process information when process is suspended
-void suspend_process_statement(int proc_num, int priority, int pid, long unsigned int prime);
+void suspend_process_statement(int proc_num, int priority, int pid);
 
 //Display process information when process is resumed
-void resume_process_statement(int proc_num, int priority, int pid, long unsigned int prime);
+void resume_process_statement(int proc_num, int priority, int pid);
 
 //Display process information when process is finished
-void finished_process_statement(int proc_num, int priority, int pid, long unsigned int prime);
+void terminate_process_statement(int proc_num, int priority, int pid);
 
 // parses input file, assigns contents to appropriate fields in a process struct, adds struct to process_list array
 void parse_input_file(FILE* f, struct process processes[]);
@@ -55,8 +61,8 @@ void parse_input_file(FILE* f, struct process processes[]);
 int main (int argc, char* argv[]) {
 
 	// curr_proc and last_proc do not exist yet
-    curr_proc = -1;
-    last_proc = -1;
+    curr_proc = INDEX_NOT_ASSIGNED;
+    last_proc = INDEX_NOT_ASSIGNED;
 
 	// read input file and store info in process_list
     FILE* input_file = fopen(INPUT_PATH, "r");
@@ -71,7 +77,8 @@ int main (int argc, char* argv[]) {
 }
 
 void timer_handler(int signal) {
-
+    //
+    scheduler_time();
 	// new tick, curr_proc is now last_proc
 	last_proc = curr_proc;
 	
@@ -87,6 +94,9 @@ void timer_handler(int signal) {
     
     // if a process was completed in the last tick
 	if (last_proc >= 0 && process_list[last_proc].burst == 0) {
+        terminate_process_statement(process_list[curr_proc].number,
+                                        process_list[curr_proc].priority,
+                                        process_list[curr_proc].pid);
         // terminate the process from the last tick
         kill(process_list[last_proc].pid, SIGTERM);
         // no currently running process anymore
@@ -126,8 +136,12 @@ void timer_handler(int signal) {
 
 	// if there was a process running at the last tick but it isn't terminated yet
     if (last_proc >= 0 && process_list[last_proc].burst > 0 && last_proc != curr_proc) {
+        suspend_process_statement(process_list[last_proc].number,
+                                process_list[last_proc].priority,
+                                process_list[last_proc].pid);
         // send the suspend signal to the process running in the last tick
         kill(process_list[last_proc].pid, SIGTSTP);
+
     }
 
 	// if there is a process running in the current tick
@@ -141,9 +155,13 @@ void timer_handler(int signal) {
 
             //Child process
             if (fork_pid == 0) {
+
+                begin_process_statement(process_list[curr_proc].number,
+                                        process_list[curr_proc].priority,
+                                        process_list[curr_proc].pid);
             
             	// pass process number and priority number to child process prime.c
-                char proc_num[10], priority_num[10];
+                char proc_num[STR_LEN], priority_num[STR_LEN];
                 
                 sprintf(proc_num, "%d", process_list[curr_proc].number);
                 sprintf(priority_num, "%d", process_list[curr_proc].priority);
@@ -161,6 +179,9 @@ void timer_handler(int signal) {
         // if we are switching processes in this tick
         else if (last_proc != curr_proc) {
             // send resume signal to curr_proc
+            resume_process_statement(process_list[curr_proc].number,
+                                        process_list[curr_proc].priority,
+                                        process_list[curr_proc].pid);
             kill(process_list[curr_proc].pid, SIGCONT);
         }
     }
@@ -200,25 +221,25 @@ void parse_input_file(FILE* f,struct process processes[]) {
     }
 }
 
-void begin_process_information(int proc_num, int priority, int pid, long unsigned int value) {
-    printf("Process %d: Priority %d, PID %d: STARTING\n Beginning" 
-           "value: %lu \n", proc_num, priority, pid, value);
+void scheduler_time() {
+    printf("Scheduler: Time now: %d seconds\n", ticks);
 }
 
-void suspend_process_statement(int proc_num, int priority, int pid, long unsigned int prime) {
-    printf("Process %d: Priority %d, PID %d: SUSPENDING\nHighest prime found: "
-           "%lu \n", proc_num, priority, pid, prime); 
+void begin_process_statement(int proc_num, int priority, int pid) {
+    printf("Process %d: Priority %d, PID %d: STARTING\n", proc_num, priority, pid);
 }
 
-//Display process information when process is resumed
-void resume_process_statement(int proc_num, int priority, int pid, long unsigned int prime) {
-    printf("Process %d: Priority %d, PID %d, RESUMING\nHighest prime found: "
-           "%lu\n", proc_num, priority, pid, prime);
+void suspend_process_statement(int proc_num, int priority, int pid) {
+    printf("Process %d: Priority %d, PID %d: SUSPENDING\n", proc_num, priority, pid); 
 }
 
 //Display process information when process is resumed
-void finished_process_statement(int proc_num, int priority, int pid, long unsigned int prime) {
-    printf("Process %d: Priority %d, PID %d, FINISHED\nHighest prime found: "
-           "%lu\n", proc_num, priority, pid, prime);
+void resume_process_statement(int proc_num, int priority, int pid) {
+    printf("Process %d: Priority %d, PID %d, RESUMING\n", proc_num, priority, pid);
+}
+
+//Display process information when process is resumed
+void terminate_process_statement(int proc_num, int priority, int pid) {
+    printf("Process %d: Priority %d, PID %d, FINISHED\n", proc_num, priority, pid);
 }
 

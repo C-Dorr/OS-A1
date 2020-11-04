@@ -56,9 +56,3 @@ void finished_process_statement(int proc_num, int priority, int pid, long unsign
     printf("Process %d: Priority %d, PID %d, FINISHED\nHighest prime found: "
            "%lu\n", proc_num, priority, pid, prime);
 }
-
-int break_priority_tie(int pid_1, int pid_2) {
-    int higher_priority = pid_1;
-
-    return higher_priority;
-}
