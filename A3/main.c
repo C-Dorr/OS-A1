@@ -4,34 +4,43 @@
 #include <semaphore.h>
 
 const int GETOPT_FAILURE = -1;
-const int TAXI_MAX = 4;
+const int TAXI_CAPACITY = 4;
 /* Declare, and in some cases assign, variables to be used later */
-int op, student_count, taxi_count, max_seconds;
+int op, student_count, student_counter, taxi_count, max_seconds;
+
+int ready_students[];
 
 void student();
 void taxi();
 void thread_task(int i);
-void student_status(int student_num, int time_left);
-void taxi_status(int taxi_num, int[] current_students);
 
 int main(int argc, char *argv[]) {
+    //Initialize to -1 in order to 
+    //know if there is a student
+    ready_students = malloc(TAXI_CAPACITY);
+    
+    for (int i = 0; i < TAXI_CAPACITY; i++) {
+        ready_students[i] = -1;
+    }
 
+    //Semaphore initializtion
     sem_t mutex;
+    sem_init(&mutex, 0, 1);
 
     /* Loop processes all options given to program using getopt() */
     while ((op = getopt(argc, argv, "s:t:m:")) != GETOPT_FAILURE) {
         switch (op) {
             case 's':
                 //Get number of students
-                student_count = getopt;
+                student_count = atoi(getopt);
                 break;
             case 't':
                 //Number of taxis
-                taxi_count = getopt;
+                taxi_count = atoi(getopt);
                 break;
             case 'm':
                 //utime information
-                max_seconds = getopt;
+                max_seconds = atoi(getopt);
                 break;
                 /* No options. Per assignment, exit with no output. */
             default:
@@ -39,47 +48,60 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    int thread_count = student_count + taxi_count;
-    
+
+
     /* Make threads */
-    pthread_t thread_id[thread_count];
-    for (int i = 0;  i < thread_count; i++) {
-        pthread_create(&thread_id[i], NULL, thread_task);
+    pthread_t student_threads[student_count];
+    for (int i = 0;  i < student_count; i++) {
+        pthread_create(&student_threads[i], NULL, student);
+    }
+
+    pthread_t taxi_threads[student_count];
+    for (int i = 0;  i < taxi_count; i++) {
+        pthread_create(&taxi_threads[i], NULL, taxi);
     }
 
     /* Makes sure the main program waits until all threads have finished */
-    for (int i = 0; i < thread_count; i++) {
-        pthread_join(thread_id[i], NULL);
+    for (int i = 0; i < taxi_count; i++) {
+        pthread_join(student_threads[i], NULL);
+    }
+    for (int i = 0; i < student_count; i++) {
+        pthread_join(taxi_threads[i], NULL);
     }
 
     /* Exit sucessfully after processing all arguments */
     exit(EXIT_SUCCESS);
 }
 
-void student(int max_seconds) {
-    int time = (rand() % max_seconds) - 1;
-}
+void student() {
+    //Start
+    int student_num = student_counter++;
+    int time = (rand() % max_seconds) + 1;
+    printf("Student %d: Partying...\n", student_num);
+    
+    //Critical
+    sleep(time);
 
-void taxi() {
-    //Dude idk
-}
-
-void thread_task(int i) {
-
-    //Exit Thread
+    //Exit
+    printf("Student %d: Done, need a ride home.\n", student_num);
+    for (int i = 0; i < TAXI_CAPACITY; i++) {
+        if (ready_students[i] != -1) {
+            ready_students[i] == student_num;
+        }            
+    }
     pthread_exit(0);
 }
 
-void student_status(int student_num, int time_left) {
-    if (time_left > 0) {
-        printf("Student %d: Partying...", student_num);
-    } else {
-        printf("Student %d: Done, need a ride home.", student_num);
-    }
-}
+void taxi() {
+    //Start
 
-void taxi_status(int taxi_num, int current_students[]) {
-    if (sizeof(current_students) == 0) {
+    //Critical
+
+    //Exit
+
+
+    /*
+if (sizeof(current_students) == 0) {
         printf("Taxi %d: Arrived. No students to take home.", taxi_num);
     } else {
         
@@ -91,5 +113,6 @@ void taxi_status(int taxi_num, int current_students[]) {
          for (int i = 0; i < sizeof(current_students); i++) {
             printf("%d ");
         }   
-    }       
+    }  
+    */
 }
