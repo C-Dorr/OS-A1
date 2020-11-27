@@ -1,0 +1,180 @@
+$ ./main -s 12 -t 3 -m 10
+Student 0: Partying...
+
+Student 1: Partying...
+
+Student 2: Partying...
+
+Student 3: Partying...
+
+Student 4: Partying...
+
+Student 5: Partying...
+
+Student 6: Partying...
+
+Student 7: Partying...
+
+Student 8: Partying...
+
+Student 9: Partying...
+
+Student 10: Partying...
+
+Taxi 0: Arrived. No students to take home.
+
+Student 11: Partying...
+
+Student 10: Done, need a ride home.
+
+Taxi 0: 1 students. Driving students 10 
+
+Student 1: Done, need a ride home.
+
+Taxi 0: 2 students. Driving students 10 1 
+
+Student 4: Done, need a ride home.
+
+Student 5: Done, need a ride home.
+
+Taxi 0: 4 students. Driving students 10 1 4 5 
+
+Taxi 0: Have 4 students, leaving. Driving students 10 1 4 5 
+
+Taxi 1: Arrived. No students to take home.
+
+Student 8: Done, need a ride home.
+
+Taxi 1: 1 students. Driving students 8 
+
+Student 2: Done, need a ride home.
+
+Taxi 1: 2 students. Driving students 8 2 
+
+Student 3: Done, need a ride home.
+
+Student 11: Done, need a ride home.
+
+Taxi 1: 4 students. Driving students 8 2 3 11 
+
+Taxi 1: Have 4 students, leaving. Driving students 8 2 3 11 
+
+Taxi 2: Arrived. No students to take home.
+
+Student 6: Done, need a ride home.
+
+Student 7: Done, need a ride home.
+
+Taxi 2: 2 students. Driving students 6 7 
+
+Taxi 2: 2 students. Driving students 6 7 
+
+Student 0: Done, need a ride home.
+
+Student 9: Done, need a ride home.
+
+Taxi 2: 4 students. Driving students 6 7 0 9 
+
+Taxi 2: Have 4 students, leaving. Driving students 6 7 0 9 
+
+$ ./main -s 16 -t 4 -m 5
+Student 0: Partying...
+
+Student 1: Partying...
+
+Student 2: Partying...
+
+Student 3: Partying...
+
+Student 4: Partying...
+
+Student 5: Partying...
+
+Student 6: Partying...
+
+Student 7: Partying...
+
+Student 8: Partying...
+
+Student 9: Partying...
+
+Student 10: Partying...
+
+Student 11: Partying...
+
+Student 12: Partying...
+
+Student 13: Partying...
+
+Student 14: Partying...
+
+Student 15: Partying...
+
+Taxi 0: Arrived. No students to take home.
+
+Student 6: Done, need a ride home.
+
+Student 7: Done, need a ride home.
+
+Taxi 0: 2 students. Driving students 6 7 
+
+Taxi 0: 2 students. Driving students 6 7 
+
+Student 1: Done, need a ride home.
+
+Taxi 0: 3 students. Driving students 6 7 1 
+
+Student 5: Done, need a ride home.
+
+Student 8: Done, need a ride home.
+
+Taxi 0: 4 students. Driving students 6 7 1 5 
+
+Taxi 0: Have 4 students, leaving. Driving students 6 7 1 5 
+
+Taxi 1: Arrived. No students to take home.
+
+Student 2: Done, need a ride home.
+
+Taxi 1: 2 students. Driving students 8 2 
+
+Student 9: Done, need a ride home.
+
+Student 10: Done, need a ride home.
+
+Student 12: Done, need a ride home.
+
+Student 14: Done, need a ride home.
+
+Taxi 1: 4 students. Driving students 8 2 9 10 
+
+Taxi 1: Have 4 students, leaving. Driving students 8 2 9 10 
+
+Taxi 2: Arrived. No students to take home.
+
+Student 11: Done, need a ride home.
+
+Student 13: Done, need a ride home.
+
+Student 0: Done, need a ride home.
+
+Taxi 2: 4 students. Driving students 12 14 11 13 
+
+Taxi 2: Have 4 students, leaving. Driving students 12 14 11 13 
+
+Taxi 3: Arrived. No students to take home.
+
+Student 3: Done, need a ride home.
+
+Student 4: Done, need a ride home.
+
+Taxi 3: 3 students. Driving students 0 3 4 
+
+Taxi 3: 3 students. Driving students 0 3 4 
+
+Student 15: Done, need a ride home.
+
+Taxi 3: 4 students. Driving students 0 3 4 15 
+
+Taxi 3: Have 4 students, leaving. Driving students 0 3 4 15 
+
