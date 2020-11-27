@@ -12,16 +12,20 @@ int op, student_count, student_counter, taxi_count, max_seconds;
 int curr_taxi;
 int* ready_students;
 int ready_students_count = 0;
+bool taxi_not_ready = true;
 
-sem_t taxi_sem;       
+sem_t taxi_sem; 
+sem_t ready_students_count_sem;
+sem_t taxi_not_ready_sem;
 
-void reset_ready_students(int size);
+void init_ready_students(int size);
 void print_ready_students();
 void* student();
 void* taxi();
 void thread_task(int i);
 
 int main(int argc, char *argv[]) {
+    srand(time(NULL));
 
     //TODO: Global variables that have multiple read/writes need sempehoreslkdjalfkdj
 
@@ -37,7 +41,7 @@ int main(int argc, char *argv[]) {
                 taxi_count = atoi(optarg);
                 break;
             case 'm':
-                //utime information
+                //Get maximum seconds 
                 max_seconds = atoi(optarg);
                 break;
                 /* No options. Per assignment, exit with no output. */
@@ -47,7 +51,9 @@ int main(int argc, char *argv[]) {
     }
     
     ready_students = malloc(student_count * sizeof(int));
-    reset_ready_students(student_count);
+    init_ready_students(student_count);
+
+    sem_init(&ready_students_count_sem, 0, 1);
 
     /* Make & Join Student threads */
     pthread_t student_threads[student_count];
@@ -56,7 +62,6 @@ int main(int argc, char *argv[]) {
     }
 
     pthread_t taxi_threads[taxi_count];
-    //sem_init(&taxi_sem);
 
     for (curr_taxi = 0; curr_taxi < taxi_count; curr_taxi++) {
         sem_init(&taxi_sem, 0, 0);
@@ -73,31 +78,47 @@ int main(int argc, char *argv[]) {
     }
 
     /* Exit sucessfully after processing all arguments */
-    exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS); 
 }
 
-void reset_ready_students(int size) {
+void init_ready_students(int size) {
 	for (int i = 0; i < size; i++) {
         ready_students[i] = -1;
     }
+
     ready_students_count = 0;
 }
 
 void print_ready_students() {
 	printf("Driving students ");
-	for (int i = 0; i < TAXI_CAPACITY; i++) {
-    	printf("%d ", ready_students[i]);
-	}
+    if(ready_students_count > 4) {
+    	for (int i = 0; i < TAXI_CAPACITY; i++) {
+        	printf("%d ", ready_students[i]);
+    	}
+    } else {
+        for (int i = 0; i < ready_students_count; i++) {
+            printf("%d ", ready_students[i]);
+        }
+    }
 	printf("\n\n");
 }
 
 void shift_ready_students() {
+    printf("count: %d\n", ready_students_count);
 	for (int i = 0; i < student_count; i++) {
+        printf("%d ", ready_students[i]);
 		if (i < student_count - TAXI_CAPACITY)
 			ready_students[i] = ready_students[i + TAXI_CAPACITY];
 		else
 			ready_students[i] = -1;
 	}
+    printf("\n");
+    for (int i = 0; i < student_count; i++) {
+        printf("%d ", ready_students[i]);
+    }
+    ready_students_count -= TAXI_CAPACITY;
+    taxi_not_ready = true;
+    printf("count: %d\n", ready_students_count);
 }
 
 void* student(int* i) {
@@ -109,8 +130,19 @@ void* student(int* i) {
     //Critical
     sleep(time);
     printf("Student %d: Done, need a ride home.\n\n", student_num);
-    ready_students[ready_students_count] == student_num;
+
+    sem_wait(&ready_students_count_sem);
+
+    ready_students[ready_students_count] = student_num;
     ready_students_count++;
+
+    sem_post(&ready_students_count_sem);
+    
+    if (ready_students_count >= 4) {
+        sem_wait(&taxi_not_ready_sem);
+        taxi_not_ready = false;
+    }
+
     //new_student_flag = true;
     sem_post(&taxi_sem);
 
@@ -124,22 +156,28 @@ void* taxi(int* i) {
 
     //Critical
     // if new student flag is up, then print number of students in taxi and new student flag is now down
-    while (ready_students_count < 4) {
-    	//if (new_student_flag) {
+    while (taxi_not_ready) {
+
     	sem_wait(&taxi_sem);
+        sem_post(&taxi_not_ready_sem);
         if (ready_students_count  > 4)  //If two students become ready at the 
                                         //same time then ready_students_count 
                                         //would be more than 4, which a taxi
-                                        //cannot carry
+                                        //cannot carry 
 		    printf("Taxi %d: %d students. ", curr_taxi, 4);
         else
             printf("Taxi %d: %d students. ", curr_taxi, ready_students_count);
+
 		print_ready_students();
+  
     }
+
     // if number of students in taxi is 4, then empty ready_students (set all values to -1)
-    printf("Taxi %d: Have 4 students. ", curr_taxi);
+    printf("Taxi %d: Have 4 students, leaving. ", curr_taxi);
+
     print_ready_students();
-	reset_ready_students(TAXI_CAPACITY);
+
+    shift_ready_students(TAXI_CAPACITY);
 
     //Exit
 	pthread_exit(0);
