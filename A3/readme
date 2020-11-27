@@ -1,0 +1,39 @@
+Assignment 3 README
+
+Assignment 3 was completed by Christopher Dorr & Jordyn Marlow
+
+We used two coupons to get a two day extension on this project, leaving
+us with two more coupons.
+
+Compilation:
+    Compile using the command
+
+        gcc main.c -o main -lpthread
+
+    this will provide an executable which can be ran as described in the 
+    following section of this readme.
+
+Using Program:
+    The program requires 3 options, described below:
+
+    -s <number of students>		The -s option expects one integer argument.
+                  				This argument is the number of students going
+                  				to the party.
+    
+    -t <number of taxis>		The -t option expects one integer argument.
+    							This argument is the number of taxis picking
+    							students up from the party.
+
+    -m <max seconds>			The -m option expects one integer argument.
+    							This argument is the maximum number of seconds
+    							the students can stay at the party.
+
+Shortcomings:
+   Main meets functional critera listed in the assignment. However, the
+   notable shortcomings are that
+
+       1. The number of students must be four times the number of taxis.
+
+       2. Occasionally, the taxi status will be displayed twice when
+       	  full. Once in student, and once in taxi when it leaves.
+ 
