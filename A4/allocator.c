@@ -11,6 +11,8 @@ struct process {
 };
 
 int best_fit_start(int size, struct process* processes[]);
+int worst_fit_start(int size, struct process* processes[]);
+int first_fit_start(int size, struct process* processes[]);
 
 int main(int argc, char *argv[]) {
     int process_count = 0;
