@@ -10,13 +10,15 @@ struct process {
     int size;
 };
 
+int best_fit_start(int size, struct process* processes[]);
+
 int main(int argc, char *argv[]) {
     int process_count = 0;
     int memory_pointer = 0;
 
     long memory_size = atoi(argv[1]);
     char * input[1000];
-    struct process processes[MAX_PROCESSES];
+    struct process* processes[MAX_PROCESSES];
 
     while( 1 ) {
 
@@ -27,13 +29,20 @@ int main(int argc, char *argv[]) {
         //printf("%s\n", command);
         //Request
         if (strcmp(command, "RQ") == 0) {
-            struct process p;
+            struct process* p;
             //P0
-            p.number = atoi(strtok(NULL, " ") + sizeof(char));
-            p.size = atoi(strtok(NULL, " "));
-            char * mode = strtok(NULL, " ");
+            p->number = atoi(strtok(NULL, " ") + sizeof(char));
+            p->size = atoi(strtok(NULL, " "));
+            char mode = strtok(NULL, " ");
 
-            //handle_mode(mode);
+            switch (mode) {
+                case 'W':
+                    break;
+                case 'B':
+                    break;
+                case 'F':
+                    break;
+            }
 
             processes[process_count++] = p;
              
