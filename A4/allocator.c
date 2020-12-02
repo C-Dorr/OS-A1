@@ -27,14 +27,20 @@ int main(int argc, char *argv[]) {
 
         char * command = strtok(input, " "); 
         //printf("%s\n", command);
+        int start = 0;
         //Request
         if (strcmp(command, "RQ") == 0) {
-            struct process* p;
+            struct process p;
+
             //P0
-            p->number = atoi(strtok(NULL, " ") + sizeof(char));
-            p->size = atoi(strtok(NULL, " "));
+            p.number = atoi(strtok(NULL, " ") + sizeof(char));
+            p.size = atoi(strtok(NULL, " "));
+            p.start = start;
+            start += p.size;
             char mode = strtok(NULL, " ");
 
+            processes[process_count++] = &p;
+            /*
             switch (mode) {
                 case 'W':
                     break;
@@ -43,15 +49,20 @@ int main(int argc, char *argv[]) {
                 case 'F':
                     break;
             }
-
-            processes[process_count++] = p;
-             
+             */
         } else if (strcmp(command, "RL") == 0) {
 
         } else if (strcmp(command, "C") == 0) {
 
         } else if (strcmp(command, "STAT") == 0) {
+            
+            printf("Processes: %d\n", process_count);
 
+            for(int i = 0; i < process_count; i++) {
+                printf("P%d: Addresses [%d:%d]\n", processes[i]->number,
+                                processes[i]->start,
+                                processes[i]->start + processes[i]->size);
+            }
         } else if (strcmp(command, "X") == 0) {
             printf("Goodbye\n");
             exit(EXIT_SUCCESS);
